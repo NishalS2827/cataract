@@ -1,0 +1,17 @@
+{
+  "class_names": [
+    "0",
+    "1",
+    "2",
+    "3"
+  ],
+  "img_size": 224,
+  "backbone": "efficientnetb0",
+  "ordinal": true,
+  "risk_band": {
+    "0": "None",
+    "1": "Low",
+    "2": "Medium",
+    "3": "High"
+  }
+}

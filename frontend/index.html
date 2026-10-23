@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Cataract Detection & Decision Support System</title>
+    
+    <!-- Clean Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="pacs-workstation theme-crimson">
+    
+    <!-- 1. TOP HEADER BAR -->
+    <header class="pacs-navbar">
+        <div class="nav-left">
+            <div class="pacs-logo">
+                <div class="logo-icon-wrap">
+                    <svg class="med-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                        <circle cx="12" cy="12" r="1" fill="currentColor"/>
+                    </svg>
+                </div>
+                <div class="logo-text-block">
+                    <div class="logo-title">AI Cataract Check <span class="version-tag">SMART CDSS</span></div>
+                    <div class="logo-sub">Instant Eye Cataract Detection & Doctor Decision System</div>
+                </div>
+            </div>
+            
+            <div class="pacs-status-badge">
+                <span class="pulse-indicator"></span>
+                <span class="status-label">System Active & Ready</span>
+            </div>
+        </div>
+
+        <!-- QUICK SAMPLE CASES (FOR EASY DEMO) -->
+        <div class="nav-center">
+            <div class="quick-case-selector">
+                <span class="case-label">TRY QUICK EXAMPLES:</span>
+                <button class="case-btn active" id="btn-demo-rajesh-v1" title="Test patient with mild early cataract">
+                    <span class="case-dot dot-low"></span> 1. Rajesh: Early Cataract
+                </button>
+                <button class="case-btn" id="btn-demo-rajesh-v2" title="Test patient with moderate progression">
+                    <span class="case-dot dot-high"></span> 2. Rajesh: Moderate Cataract
+                </button>
+                <button class="case-btn" id="btn-demo-sunita" title="Test patient with clear healthy eye">
+                    <span class="case-dot dot-norm"></span> 3. Sunita: Clear Eye
+                </button>
+            </div>
+        </div>
+
+        <div class="nav-right">
+            <div class="time-hud" id="live-telemetry-time">
+                <span class="time-val">10:30:00 LOC</span>
+                <span class="date-val">23-OCT-2026</span>
+            </div>
+            <div class="physician-card">
+                <div class="physician-avatar">
+                    <svg class="med-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </div>
+                <div class="physician-info">
+                    <div class="physician-name">Dr. S. Sharma, MD</div>
+                    <div class="physician-dept">Eye Specialist</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- STEP WORKFLOW HELPER BANNER -->
+    <div class="workflow-banner">
+        <div class="workflow-steps-list">
+            <span class="workflow-step-item" onclick="switchTab('tab-patient')">
+                <span class="step-num">1</span> Select Patient
+            </span>
+            <span class="step-arrow">➔</span>
+            <span class="workflow-step-item" onclick="switchTab('tab-imaging')">
+                <span class="step-num">2</span> Upload Eye Photo
+            </span>
+            <span class="step-arrow">➔</span>
+            <span class="workflow-step-item" onclick="switchTab('tab-cdss')">
+                <span class="step-num">3</span> View AI Diagnosis
+            </span>
+            <span class="step-arrow">➔</span>
+            <span class="workflow-step-item" onclick="switchTab('tab-doctor')">
+                <span class="step-num">4</span> Doctor Notes & Report
+            </span>
+            <span class="step-arrow">➔</span>
+            <span class="workflow-step-item" onclick="switchTab('tab-timeline')">
+                <span class="step-num">5</span> Checkup History
+            </span>
+        </div>
+    </div>
+
+    <!-- 2. WORKSTATION TABS (ONE TAB AT A TIME) -->
+    <nav class="workstation-tabbar">
+        <div class="tabbar-container">
+            <button class="tab-btn active" data-tab="tab-patient">
+                <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                </svg>
+                <span>Step 1: Patient Profile</span>
+            </button>
+
+            <button class="tab-btn" data-tab="tab-imaging">
+                <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>
+                <span>Step 2: Eye Photo & Scan</span>
+            </button>
+
+            <button class="tab-btn" data-tab="tab-cdss">
+                <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 3v18h18"/>
+                    <path d="m19 9-5 5-4-4-3 3"/>
+                </svg>
+                <span>Step 3: AI Diagnosis Result</span>
+            </button>
+
+            <button class="tab-btn" data-tab="tab-doctor">
+                <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                </svg>
+                <span>Step 4: Doctor Notes & PDF</span>
+            </button>
+
+            <button class="tab-btn" data-tab="tab-timeline">
+                <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                </svg>
+                <span>Step 5: Past Checkups</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 3. MAIN WORKSTATION BODY (SINGLE TAB AT A TIME) -->
+    <main class="workstation-body">
+
+        <!-- ====================================================================
+             TAB 1: PATIENT PROFILE
+             ==================================================================== -->
+        <section class="tab-pane active" id="tab-patient">
+            <div class="panel-header-crimson">
+                <div class="panel-title-wrap">
+                    <div class="panel-num">01</div>
+                    <div>
+                        <h2>Step 1: Patient Information</h2>
+                        <p class="panel-subtitle">Choose an existing patient from the dropdown or click "+ Add New Patient"</p>
+                    </div>
+                </div>
+                <button class="btn btn-crimson-primary" id="btn-new-patient">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+                    <span>+ Add New Patient</span>
+                </button>
+            </div>
+
+            <!-- PATIENT SELECT CARD -->
+            <div class="card-crimson patient-profile-card">
+                <div class="patient-picker-row">
+                    <div class="picker-group">
+                        <label for="patient-select" style="font-weight: 700; color: #7f1d1d; font-size: 13px;">
+                            SELECT PATIENT:
+                        </label>
+                        <select id="patient-select" class="pacs-select select-lg"></select>
+                    </div>
+                    <div class="patient-actions-group">
+                        <button class="btn btn-crimson-primary btn-next-step" onclick="switchTab('tab-imaging')">
+                            <span>Next: Eye Photo Scan ➔</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PATIENT DETAILS TILES -->
+                <div class="simple-instructions-box">
+                    💡 <strong>Quick Info:</strong> Patient profile and health background help the AI calculate accurate cataract progression risk.
+                </div>
+
+                <div class="patient-details-grid">
+                    <div class="patient-info-tile">
+                        <span class="info-label">PATIENT ID</span>
+                        <span class="info-val mono" id="disp-patient-id">PAT-2026-0842</span>
+                        <span class="info-sub">Hospital ID</span>
+                    </div>
+
+                    <div class="patient-info-tile">
+                        <span class="info-label">FULL NAME & AGE</span>
+                        <span class="info-val" id="disp-patient-name">Rajesh Kumar (62 Yrs, Male)</span>
+                        <span class="info-sub">Patient Demographics</span>
+                    </div>
+
+                    <div class="patient-info-tile highlight-tile">
+                        <span class="info-label">EYE BEING EXAMINED</span>
+                        <span class="info-val text-crimson" id="disp-monitored-eye">OD (Right Eye)</span>
+                        <span class="info-sub">Target Eye</span>
+                    </div>
+
+                    <div class="patient-info-tile">
+                        <span class="info-label">HEALTH CONDITIONS</span>
+                        <span class="info-val" id="disp-risk-factors">Type 2 Diabetes</span>
+                        <span class="info-sub">Risk Factor</span>
+                    </div>
+
+                    <div class="patient-info-tile">
+                        <span class="info-label">CHECKUPS ON FILE</span>
+                        <span class="info-val tag-protocol" id="disp-visit-count">1 Visit Recorded</span>
+                        <span class="info-sub">Historical Records</span>
+                    </div>
+                </div>
+
+                <div class="tab-bottom-action">
+                    <button class="btn btn-crimson-primary btn-large-flow" onclick="switchTab('tab-imaging')">
+                        <span>Continue to Step 2: Upload or Select Eye Photo ➔</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====================================================================
+             TAB 2: SLIT-LAMP VIEWPORT & EYE PHOTO
+             ==================================================================== -->
+        <section class="tab-pane" id="tab-imaging">
+            <div class="panel-header-crimson">
+                <div class="panel-title-wrap">
+                    <div class="panel-num">02</div>
+                    <div>
+                        <h2>Step 2: Eye Photo & AI Scan</h2>
+                        <p class="panel-subtitle">Upload an eye photo from your computer or pick a test sample below, then click "Analyze"</p>
+                    </div>
+                </div>
+                <div class="header-tab-actions">
+                    <button class="btn btn-crimson-outline" onclick="switchTab('tab-cdss')">
+                        <span>Skip to Step 3: View AI Result ➔</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="card-crimson viewport-main-card">
+                
+                <!-- EASY IMAGE UPLOAD / INGESTION BOX FIRST (PROMINENT AT TOP) -->
+                <div class="ingestion-bar" id="ingestion-dropzone">
+                    <div class="ingestion-title">
+                        <svg class="ingest-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                        <span>SELECT EYE PHOTO TO CHECK FOR CATARACT:</span>
+                    </div>
+                    <form id="upload-visit-form" class="ingestion-form">
+                        <div class="form-group-compact">
+                            <label class="compact-label" for="visit-date-input">CHECKUP DATE</label>
+                            <input type="date" id="visit-date-input" class="pacs-input" required>
+                        </div>
+
+                        <div class="form-group-compact">
+                            <label class="compact-label">OPTION A: PICK FROM COMPUTER</label>
+                            <label class="btn-file-upload" id="file-upload-label" title="Click to choose a picture from your computer">
+                                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5-5 5 5M12 15V3"/></svg>
+                                <span id="file-upload-text">Browse Computer (JPG/PNG)...</span>
+                                <input type="file" id="file-upload-input" accept="image/jpeg,image/png,image/jpg,image/webp">
+                            </label>
+                        </div>
+
+                        <div class="form-group-compact">
+                            <label class="compact-label" for="demo-stage-select">OPTION B: OR USE SAMPLE EYE</label>
+                            <select id="demo-stage-select" class="pacs-select">
+                                <option value="">-- Choose Sample Picture --</option>
+                                <option value="normal">Normal Eye (No Cataract)</option>
+                                <option value="early">Early Stage Cataract</option>
+                                <option value="moderate">Moderate Stage Cataract</option>
+                                <option value="severe">Severe Advanced Cataract</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-crimson-primary btn-run-glow" id="btn-run-analysis">
+                            <span>⚡ Check Eye with AI Now</span>
+                        </button>
+                    </form>
+
+                    <div id="file-selected-status" class="file-selected-status" style="display: none;"></div>
+                </div>
+
+                <!-- VIEWPORT TOOLBAR -->
+                <div class="viewport-toolbar">
+                    <div class="tool-group">
+                        <span class="tool-title">EYE PHOTO COMPARISON VIEW</span>
+                    </div>
+
+                    <!-- GRAD-CAM ATTENTION SLIDER -->
+                    <div class="gradcam-controls">
+                        <span class="gradcam-label">AI Heatmap Highlight:</span>
+                        <input type="range" id="gradcam-slider" min="0" max="100" value="80" class="slider-range">
+                        <span class="slider-pct" id="gradcam-pct-disp">80%</span>
+                    </div>
+
+                    <!-- IMAGE FILTERS -->
+                    <div class="filter-tools">
+                        <button class="btn-tool active" id="btn-tool-normal" title="Normal Color Photo">Normal</button>
+                        <button class="btn-tool" id="btn-tool-clahe" title="High Contrast">High Contrast</button>
+                        <button class="btn-tool" id="btn-tool-invert" title="Invert Colors">Invert</button>
+                    </div>
+                </div>
+
+                <!-- DUAL IMAGE CANVAS COMPARISON -->
+                <div class="dual-viewport-grid">
+                    
+                    <!-- BASELINE / PREVIOUS IMAGE PANE -->
+                    <div class="pane-box" id="pane-prev">
+                        <div class="pane-header">
+                            <span class="pane-badge baseline-badge">PREVIOUS CHECKUP PHOTO</span>
+                            <span class="pane-date" id="prev-visit-date">12-AUG-2026</span>
+                        </div>
+                        <div class="img-viewport" id="viewport-prev">
+                            <img id="prev-eye-img" src="" alt="Previous Eye Photo">
+                            <div class="hud-overlay-text bottom-left" id="prev-severity-overlay">EARLY CATARACT</div>
+                            <div class="empty-state-notice" id="prev-empty-msg" style="display: none;">
+                                <svg class="empty-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                                <div class="notice-main">First Visit (No Previous Photo)</div>
+                                <div class="sub-notice">This checkup will be saved as the baseline for future comparisons.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CURRENT VISIT IMAGE PANE -->
+                    <div class="pane-box active-pane" id="pane-curr">
+                        <div class="pane-header">
+                            <span class="pane-badge current-badge">CURRENT CHECKUP PHOTO</span>
+                            <span class="pane-date" id="curr-visit-date">18-NOV-2026</span>
+                        </div>
+                        <div class="img-viewport" id="viewport-curr">
+                            <img id="curr-eye-img" src="" alt="Current Eye Photo">
+                            <div class="hud-overlay-text bottom-left" id="curr-severity-overlay">MODERATE CATARACT</div>
+                            <div class="hud-overlay-text top-right quality-pass" id="curr-clarity-hud">QUALITY: GOOD</div>
+                            <div class="empty-state-notice" id="curr-empty-msg" style="display: none;">
+                                <svg class="empty-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                                    <polyline points="21 15 16 10 5 21"/>
+                                </svg>
+                                <div class="notice-main">No Photo Uploaded Yet</div>
+                                <div class="sub-notice">Select an image above and click "Check Eye with AI Now".</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ====================================================================
+             TAB 3: AI DIAGNOSIS & RESULTS
+             ==================================================================== -->
+        <section class="tab-pane" id="tab-cdss">
+            <div class="panel-header-crimson">
+                <div class="panel-title-wrap">
+                    <div class="panel-num">03</div>
+                    <div>
+                        <h2>Step 3: AI Cataract Diagnosis Results</h2>
+                        <p class="panel-subtitle">Clear summary of cataract detection, severity level, and recommended next steps</p>
+                    </div>
+                </div>
+                <div class="header-tab-actions">
+                    <span class="ai-live-pill">AI SCAN COMPLETE</span>
+                    <button class="btn btn-crimson-primary btn-next-step" onclick="switchTab('tab-doctor')">
+                        <span>Next: Doctor Notes & Report ➔</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="card-crimson telemetry-container-card">
+                
+                <!-- 4 PRIMARY TELEMETRY TILES -->
+                <div class="telemetry-grid">
+                    
+                    <!-- 1. CATARACT DETECTION -->
+                    <div class="telemetry-tile">
+                        <div class="tile-header">
+                            <span class="tile-title">1. CATARACT FOUND?</span>
+                            <span class="tile-status status-pos" id="ai-detection-tag">YES</span>
+                        </div>
+                        <div class="tile-value highlight-red" id="ai-detection">Cataract Detected</div>
+                        <div class="confidence-bar-wrapper">
+                            <div class="confidence-bar-fill" id="ai-conf-bar" style="width: 98.7%;"></div>
+                        </div>
+                        <div class="tile-sub mono" id="ai-confidence">AI Confidence: 98.7% Sure</div>
+                        <div class="tile-helper">Checked by AI neural network</div>
+                    </div>
+
+                    <!-- 2. SEVERITY CLASSIFICATION -->
+                    <div class="telemetry-tile">
+                        <div class="tile-header">
+                            <span class="tile-title">2. HOW SEVERE IS IT?</span>
+                            <span class="tile-status" id="ai-grade-tag">GRADE 2</span>
+                        </div>
+                        <div class="tile-value" id="ai-severity">Moderate (Grade 2)</div>
+                        <div class="tile-bar-dual">
+                            <div class="bar-seg filled" title="Grade 0: Clear"></div>
+                            <div class="bar-seg filled" title="Grade 1: Mild"></div>
+                            <div class="bar-seg" title="Grade 2: Moderate"></div>
+                            <div class="bar-seg" title="Grade 3: Severe"></div>
+                        </div>
+                        <div class="tile-sub" id="ai-opacity-pct">Lens Cloudiness: 58.4%</div>
+                        <div class="tile-helper">Scale: Clear ➔ Mild ➔ Moderate ➔ Severe</div>
+                    </div>
+
+                    <!-- 3. LONGITUDINAL PROGRESSION -->
+                    <div class="telemetry-tile">
+                        <div class="tile-header">
+                            <span class="tile-title">3. CHANGE SINCE LAST VISIT</span>
+                            <span class="tile-status status-alert" id="ai-trend-tag">WORSENED</span>
+                        </div>
+                        <div class="tile-value highlight-amber" id="ai-progression-trend">Increasing Progression</div>
+                        <div class="tile-sub mono" id="ai-ssim-score">Comparison Score: 0.72</div>
+                        <div class="tile-detail" id="ai-delta-desc">Lens cloudiness has expanded since the previous visit.</div>
+                        <div class="tile-helper">Compared against prior photo</div>
+                    </div>
+
+                    <!-- 4. PROGRESSION RISK ASSESSMENT -->
+                    <div class="telemetry-tile">
+                        <div class="tile-header">
+                            <span class="tile-title">4. OVERALL RISK LEVEL</span>
+                            <span class="tile-status status-high" id="ai-risk-tag">HIGH RISK</span>
+                        </div>
+                        <div class="tile-value">
+                            <span class="risk-badge badge-high" id="ai-risk-badge">HIGH RISK (Score: 0.78)</span>
+                        </div>
+                        <div class="tile-sub" style="margin-top: 8px;">Needs Doctor Attention</div>
+                        <div class="tile-helper">Calculated from eye scan + health conditions</div>
+                    </div>
+
+                </div>
+
+                <!-- 5. FOLLOW-UP RECOMMENDATION BANNER -->
+                <div class="followup-banner">
+                    <div class="banner-icon-box">
+                        <svg class="cal-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                            <line x1="16" y1="2" x2="16" y2="6"/>
+                            <line x1="8" y1="2" x2="8" y2="6"/>
+                            <line x1="3" y1="10" x2="21" y2="10"/>
+                        </svg>
+                    </div>
+                    <div class="banner-content">
+                        <div class="banner-tag">RECOMMENDED NEXT CHECKUP DATE:</div>
+                        <div class="banner-target-month" id="ai-followup-month">February 2027 (in about 3 Months)</div>
+                        <div class="banner-disclaimer">
+                            Based on how fast the cataract is developing and the patient's medical history. The doctor can confirm or change this in the next step.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-bottom-action">
+                    <button class="btn btn-crimson-primary btn-large-flow" onclick="switchTab('tab-doctor')">
+                        <span>Proceed to Step 4: Add Doctor Notes & Download PDF Report ➔</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====================================================================
+             TAB 4: DOCTOR VALIDATION & REPORTS
+             ==================================================================== -->
+        <section class="tab-pane" id="tab-doctor">
+            <div class="panel-header-crimson">
+                <div class="panel-title-wrap">
+                    <div class="panel-num">04</div>
+                    <div>
+                        <h2>Step 4: Doctor Notes & Official PDF Reports</h2>
+                        <p class="panel-subtitle">Add medical advice, click "Save & Sign", and print official hospital reports</p>
+                    </div>
+                </div>
+                <div class="header-tab-actions">
+                    <button class="btn btn-crimson-outline" onclick="switchTab('tab-timeline')">
+                        <span>View Past Checkup History ➔</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="card-crimson doctor-notes-main-card">
+                <div class="doctor-validation-box">
+                    <div class="box-title">
+                        <span>CLICK A READY-MADE DOCTOR ADVICE TEMPLATE:</span>
+                    </div>
+                    
+                    <div class="quick-clinical-presets">
+                        <button type="button" class="btn-preset" data-text="Mild early cataract observed. Visual acuity good. Advised UV protection sunglasses and regular eye drops. Schedule routine 9-12 month re-check.">1. Routine (9-12 Months)</button>
+                        <button type="button" class="btn-preset" data-text="Moderate cataract progression noted. Patient reports glare during night driving. Recommend detailed check-up in ~3 months.">2. Glare Progression (~3 Months)</button>
+                        <button type="button" class="btn-preset" data-text="Advanced cataract affecting clear vision. Refer for surgical evaluation and phacoemulsification planning.">3. Refer for Surgery</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="compact-label" for="doctor-notes-input">DOCTOR'S CLINICAL NOTES & PRESCRIPTION</label>
+                        <textarea id="doctor-notes-input" class="pacs-textarea textarea-lg" placeholder="Type doctor's advice, eyesight reading (e.g. 20/30), or click one of the quick templates above..."></textarea>
+                    </div>
+                    
+                    <div class="validation-action-row">
+                        <button class="btn btn-success-glow btn-lg" id="btn-save-notes">
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+                            <span>✓ Save & Sign Record</span>
+                        </button>
+                        <button class="btn btn-crimson-primary btn-lg" id="btn-view-clinical-report">
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                            <span>📄 Download Hospital PDF Report</span>
+                        </button>
+                        <button class="btn btn-crimson-outline btn-lg" id="btn-view-patient-summary">
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+                            <span>📄 Patient Advice Leaflet</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====================================================================
+             TAB 5: PAST CHECKUPS TIMELINE
+             ==================================================================== -->
+        <section class="tab-pane" id="tab-timeline">
+            <div class="panel-header-crimson">
+                <div class="panel-title-wrap">
+                    <div class="panel-num">05</div>
+                    <div>
+                        <h2>Step 5: Patient Checkup History</h2>
+                        <p class="panel-subtitle">Timeline showing how the patient's cataract has changed across visits</p>
+                    </div>
+                </div>
+                <div class="visit-counter-badge" id="disp-timeline-visit-count">1 Visit Recorded</div>
+            </div>
+
+            <div class="card-crimson trajectory-timeline-card">
+                <div class="simple-instructions-box">
+                    💡 <strong>Timeline Guide:</strong> Click any visit below to load that examination and view its eye photo and AI results.
+                </div>
+                <!-- TIMELINE VISUAL STEPPER -->
+                <div class="timeline-visual-stepper" id="visits-timeline-stepper">
+                    <!-- Dynamically populated by JS -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- NEW PATIENT MODAL -->
+    <div class="modal-backdrop" id="patient-modal" style="display: none;">
+        <div class="modal-dialog card-crimson-modal">
+            <div class="modal-head">
+                <div class="modal-title-wrap">
+                    <svg class="modal-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+                    <h3>Register New Patient</h3>
+                </div>
+                <button class="btn-close" id="btn-close-modal">✕</button>
+            </div>
+            <form id="new-patient-form">
+                <div class="form-grid-2">
+                    <div class="form-field">
+                        <label for="new-p-id">PATIENT ID</label>
+                        <input type="text" id="new-p-id" class="pacs-input" required readonly>
+                    </div>
+                    <div class="form-field">
+                        <label for="new-p-name">PATIENT FULL NAME</label>
+                        <input type="text" id="new-p-name" class="pacs-input" placeholder="e.g. Ramesh Patel" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="new-p-age">AGE (YEARS)</label>
+                        <input type="number" id="new-p-age" class="pacs-input" min="1" max="120" value="55" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="new-p-gender">GENDER</label>
+                        <select id="new-p-gender" class="pacs-select">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label for="new-p-eye">MONITORED EYE</label>
+                        <select id="new-p-eye" class="pacs-select">
+                            <option value="OD (Right Eye)">OD (Right Eye)</option>
+                            <option value="OS (Left Eye)">OS (Left Eye)</option>
+                            <option value="OU (Both Eyes)">OU (Both Eyes)</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label for="new-p-risks">HEALTH CONDITIONS (RISK FACTORS)</label>
+                        <select id="new-p-risks" class="pacs-select">
+                            <option value="No major systemic risk factors">None / Normal</option>
+                            <option value="Type 2 Diabetes (HbA1c > 7.0%)">Type 2 Diabetes</option>
+                            <option value="Corticosteroid Use (Topical / Systemic)">Steroid Medication Use</option>
+                            <option value="High UV / Outdoor Occupational Exposure">Frequent Outdoor / Sunlight Exposure</option>
+                            <option value="Hypertension (Controlled)">High Blood Pressure (Hypertension)</option>
+                            <option value="Previous Ocular Trauma / Surgery">Previous Eye Injury / Surgery</option>
+                            <option value="Family History of Early Cataract">Family History of Cataract</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="modal-footer-btn-row">
+                    <button type="button" class="btn btn-crimson-outline" id="btn-cancel-modal">Cancel</button>
+                    <button type="submit" class="btn btn-crimson-primary">Save Patient & Continue</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- REPORT VIEWER MODAL -->
+    <div class="modal-backdrop" id="report-modal" style="display: none;">
+        <div class="modal-dialog card-crimson-modal report-modal-wide">
+            <div class="modal-head">
+                <div class="modal-title-wrap">
+                    <svg class="modal-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <h3 id="report-modal-title">Official Medical Cataract Report</h3>
+                </div>
+                <button class="btn-close" id="btn-close-report-modal">✕</button>
+            </div>
+            <div class="report-frame-container">
+                <iframe id="report-iframe" src="" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Workstation Controller -->
+    <script src="app.js"></script>
+</body>
+</html>
